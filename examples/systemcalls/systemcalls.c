@@ -1,4 +1,11 @@
 #include "systemcalls.h"
+#include "stdlib.h"
+#include "sys/types.h"
+#include "unistd.h"
+#include "sys/wait.h"
+#include "fcntl.h"
+#include "sys/stat.h"
+#include "string.h"
 
 /**
  * @param cmd the command to execute with system()
@@ -16,8 +23,19 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+	int retStat = system(cmd);
+	
+	if(retStat == -1)
+	{
+		return false;
+	}
+	
+	if(!WIFEXITED(retStat) || WEXITSTATUS(retStat) != 0)
+	{
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 /**
@@ -36,18 +54,15 @@ bool do_system(const char *cmd)
 
 bool do_exec(int count, ...)
 {
-    va_list args;
-    va_start(args, count);
-    char * command[count+1];
-    int i;
-    for(i=0; i<count; i++)
-    {
-        command[i] = va_arg(args, char *);
-    }
-    command[count] = NULL;
-    // this line is to avoid a compile warning before your implementation is complete
-    // and may be removed
-    command[count] = command[count];
+	va_list args;
+	va_start(args, count);
+	char * command[count+1];
+	int i;
+	for(i=0; i<count; i++)
+	{
+		command[i] = va_arg(args, char *);
+	}
+	command[count] = NULL;
 
 /*
  * TODO:
@@ -58,10 +73,19 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
+	pid_t thisPid = fork();
+	int execStat = execv(command[0], &command[1]);
+	int waitStat;
+	/*pid_t thisWaitPid = */waitpid(thisPid, &waitStat, 0);
 
-    va_end(args);
+	va_end(args);
+	
+	if(thisPid == -1 || execStat == -1 || !WIFEXITED(waitStat))
+	{
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 /**
@@ -71,18 +95,15 @@ bool do_exec(int count, ...)
 */
 bool do_exec_redirect(const char *outputfile, int count, ...)
 {
-    va_list args;
-    va_start(args, count);
-    char * command[count+1];
-    int i;
-    for(i=0; i<count; i++)
-    {
-        command[i] = va_arg(args, char *);
-    }
-    command[count] = NULL;
-    // this line is to avoid a compile warning before your implementation is complete
-    // and may be removed
-    command[count] = command[count];
+	va_list args;
+	va_start(args, count);
+	char * command[count+1];
+	int i;
+	for(i=0; i<count; i++)
+	{
+		command[i] = va_arg(args, char *);
+	}
+	command[count] = NULL;
 
 
 /*
@@ -92,8 +113,24 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *
 */
+	int fd = open(outputfile, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	if(dup2(fd, STDOUT_FILENO) < 0) 
+	{
+		return false;
+	}
+	close(fd);
 
-    va_end(args);
+	pid_t thisPid = fork();
+	int execStat = execv(command[0], &command[1]);
+	int waitStat;
+	/*pid_t thisWaitPid = */waitpid(thisPid, &waitStat, 0);
 
-    return true;
+	va_end(args);
+	
+	if(thisPid == -1 || execStat == -1 || !WIFEXITED(waitStat))
+	{
+		return false;
+	}
+
+	return true;
 }
