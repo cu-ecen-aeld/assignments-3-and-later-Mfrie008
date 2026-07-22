@@ -13,8 +13,6 @@ FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
 
-WRITER_APP_DIR="/home/matt-coursera/Documents/course1/assignment3/repo/assignment-3-part-1-Mfrie008/finder-app"
-
 if [ $# -lt 1 ]
 then
 	echo "Using default directory ${OUTDIR} for output"
@@ -39,8 +37,7 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     # TODO: Add your kernel build steps here
     
     # deep clean
-    # debug commented out for speed
-    #make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE mrproper
+    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE mrproper
     
     # make virtual target .config
     make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE defconfig
@@ -88,8 +85,7 @@ else
 fi
 
 # TODO: Make and install busybox
-# debug commented out for speed
-#make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE distclean
+make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE distclean
 make -j8 ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE defconfig
 make -j8 ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE
 make CONFIG_PREFIX="${OUTDIR}/rootfs" ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE install
@@ -114,16 +110,16 @@ sudo mknod -m 622 "${OUTDIR}/rootfs/dev/console" c 5 1
 
 
 # TODO: Clean and build the writer utility
-cd $WRITER_APP_DIR
+cd $FINDER_APP_DIR
 make clean
 make CROSS_COMPILE=$CROSS_COMPILE
 
 # TODO: Copy the finder related scripts and executables to the /home directory
 # on the target rootfs
-cp "$WRITER_APP_DIR/writer" "${OUTDIR}/rootfs/home"
-cp "$WRITER_APP_DIR/finder.sh" "${OUTDIR}/rootfs/home"
-cp "$WRITER_APP_DIR/finder-test.sh" "${OUTDIR}/rootfs/home"
-cp "$WRITER_APP_DIR/autorun-qemu.sh" "${OUTDIR}/rootfs/home"
+cp "$FINDER_APP_DIR/writer" "${OUTDIR}/rootfs/home"
+cp "$FINDER_APP_DIR/finder.sh" "${OUTDIR}/rootfs/home"
+cp "$FINDER_APP_DIR/finder-test.sh" "${OUTDIR}/rootfs/home"
+cp "$FINDER_APP_DIR/autorun-qemu.sh" "${OUTDIR}/rootfs/home"
 
 # need to also include username.txt in /conf for writer/finder to work
 mkdir ${OUTDIR}/rootfs/home/conf
