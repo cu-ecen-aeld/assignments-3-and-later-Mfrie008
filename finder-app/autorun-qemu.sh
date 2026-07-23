@@ -9,4 +9,4 @@ else
     echo "Completed with failure, failed with rc=${rc}"
 fi
 echo "finder-app execution complete, dropping to terminal"
-/bin/sh
+#/bin/sh
