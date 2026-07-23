@@ -136,4 +136,4 @@ cd "${OUTDIR}"
 gzip -f $OUTDIR/initramfs.cpio
 
 # Copy compiled linux image to outdir
-#sudo cp /tmp/aeld/linux-stable/arch/arm64/boot/Image $OUTDIR
+sudo cp $OUTDIR/linux-stable/arch/arm64/boot/Image $OUTDIR
