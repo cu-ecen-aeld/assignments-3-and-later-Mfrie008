@@ -107,7 +107,7 @@ sudo mknod -m 666 "${OUTDIR}/rootfs/dev/console" c 5 1
 
 
 # TODO: Clean and build the writer utility
-curdir=$(pwd)
+curdir=$(pwd) # credit to github user drikera
 popd
 make clean
 make CROSS_COMPILE=$CROSS_COMPILE
@@ -125,11 +125,11 @@ cp conf/username.txt ${OUTDIR}/rootfs/home/conf
 cp conf/assignment.txt ${OUTDIR}/rootfs/home/conf
 
 # need to also copy image to outdir
-imgdir=$(find ${OUTDIR} -name "Image" )
+imgdir=$(find ${OUTDIR} -name "Image" ) # credit to github user drikera
 cp ${imgdir} ${OUTDIR}
 
 # TODO: Chown the root directory
-cd ${curdir}
+cd ${curdir} # credit to github user drikera
 sudo chown -R root:root "${OUTDIR}/rootfs"
 
 # TODO: Create initramfs.cpio.gz
