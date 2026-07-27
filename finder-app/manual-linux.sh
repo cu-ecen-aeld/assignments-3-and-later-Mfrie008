@@ -80,14 +80,13 @@ git clone git://busybox.net/busybox.git
     cd busybox
     git checkout ${BUSYBOX_VERSION}
     # TODO:  Configure busybox
-    # Not sure if there's anything to do here?
+    make distclean
+    make defconfig
 else
     cd busybox
 fi
 
 # TODO: Make and install busybox
-make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE distclean
-make -j8 ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE defconfig
 make -j8 ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE
 make CONFIG_PREFIX="${OUTDIR}/rootfs" ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE install
 
@@ -124,9 +123,10 @@ mkdir ${OUTDIR}/rootfs/home/conf
 cp conf/username.txt ${OUTDIR}/rootfs/home/conf
 cp conf/assignment.txt ${OUTDIR}/rootfs/home/conf
 
-# need to also copy image to outdir
+# need to also copy image to outdir; force remove existing Image so cp cmd doesn't give warning/fail
+rm -f $OUTDIR/Image
 imgdir=$(find ${OUTDIR} -name "Image" ) # credit to github user drikera
-cp ${imgdir} ${OUTDIR}
+cp -f ${imgdir} ${OUTDIR}
 
 # TODO: Chown the root directory
 cd ${curdir} # credit to github user drikera
