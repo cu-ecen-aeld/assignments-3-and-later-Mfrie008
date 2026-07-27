@@ -5,8 +5,8 @@
 
 // Optional: use these functions to add debug or error prints to your application
 #define DEBUG_LOG(msg,...)
-//#define DEBUG_LOG(msg,...) printf("threading: " msg "\n" , ##__VA_ARGS__)
-#define ERROR_LOG(msg,...) printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
+//#define DEBUG_LOG(msg,...) //printf("threading: " msg "\n" , ##__VA_ARGS__)
+#define ERROR_LOG(msg,...) //printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
 
 static long unsigned int getMsFromClock(void)
 {
@@ -27,21 +27,21 @@ void* threadfunc(void* thread_param)
 	// hint: use a cast like the one below to obtain thread arguments from your parameter
 	//struct thread_data* thread_func_args = (struct thread_data *) thread_param;
 	
-	printf("%s\n", "waiting before lock");
-	start = getMsFromClock(); printf("%lu\n", start);
+	//printf("%s\n", "waiting before lock");
+	start = getMsFromClock(); //printf("%lu\n", start);
 	while((now = getMsFromClock()) < (start + thisData->waitGet));
-	printf("%lu: locking\n", now);
+	//printf("%lu: locking\n", now);
 	
 	int lockStat = pthread_mutex_lock(thisData->inputMutex);
 	
-	printf("%s\n", "waiting after lock");
-	start = getMsFromClock(); printf("%lu\n", start);
+	//printf("%s\n", "waiting after lock");
+	start = getMsFromClock(); //printf("%lu\n", start);
 	while((now = getMsFromClock()) < (start + thisData->waitRelease));
-	printf("%lu: releasing\n", now);
+	//printf("%lu: releasing\n", now);
 	
 	int relStat = pthread_mutex_unlock(thisData->inputMutex);
 	
-	printf("lock stat: %d, release stat: %d\n", lockStat, relStat);
+	//printf("lock stat: %d, release stat: %d\n", lockStat, relStat);
 	
 	thisData->thread_complete_success = !lockStat && !relStat;
 	
@@ -59,7 +59,7 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	 *
 	 * See implementation details in threading.h file comment block
 	 */
-	printf("Creating thread for waitGet: %d, and waitRel: %d\n", wait_to_obtain_ms, wait_to_release_ms);
+	//printf("Creating thread for waitGet: %d, and waitRel: %d\n", wait_to_obtain_ms, wait_to_release_ms);
 
 	pthread_mutex_init(mutex, NULL);
 
