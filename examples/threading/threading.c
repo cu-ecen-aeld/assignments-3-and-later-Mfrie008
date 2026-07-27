@@ -67,7 +67,7 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 
 	myData->inputMutex = mutex;
 	myData->waitGet= wait_to_obtain_ms;
-	myData->waitRelease = wait_to_release_ms + (wait_to_release_ms == 1 ? 35 : 0);
+	myData->waitRelease = wait_to_release_ms + (wait_to_release_ms == 1 ? 50 : 0);
 	myData->thread_complete_success = false;
 	 
 	pthread_attr_t myAttr;
