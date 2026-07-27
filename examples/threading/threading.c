@@ -7,7 +7,7 @@
 #define DEBUG_LOG(msg,...)
 //#define DEBUG_LOG(msg,...) //printf("threading: " msg "\n" , ##__VA_ARGS__)
 #define ERROR_LOG(msg,...) //printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
-#define FILENAME "numThreads.txt"
+#define FILENAME "/tmp/numThreads.txt"
 
 static long unsigned int getMsFromClock(void)
 {
@@ -24,7 +24,7 @@ static int getDly(int numThreads)
 	switch(numThreads)
 	{
 		case 1:
-			return 19;
+			return 10;
 			break;
 		case 2:
 			return 0;
