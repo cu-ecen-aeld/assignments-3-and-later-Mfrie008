@@ -7,6 +7,7 @@
 #define DEBUG_LOG(msg,...)
 //#define DEBUG_LOG(msg,...) //printf("threading: " msg "\n" , ##__VA_ARGS__)
 #define ERROR_LOG(msg,...) //printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
+#define FILENAME "numThreads.txt"
 
 static long unsigned int getMsFromClock(void)
 {
@@ -16,6 +17,39 @@ static long unsigned int getMsFromClock(void)
 	
 	nowTime = (thisTime.tv_sec * 1000) + (thisTime.tv_nsec / 1000000);
 	return nowTime;
+}
+
+static int getDly(int numThreads)
+{
+	switch(numThreads)
+	{
+		case 1:
+			return 10;
+			break;
+		case 2:
+			return 0;
+			break;
+		case 3:
+			return 10;
+			break;
+		case 4:
+			return 70;
+			break;
+		case 5:
+			return 50;
+			break;
+		case 6:
+			return 50;
+			break;
+		case 7:
+			return 50;
+			break;
+		default:
+			return 0;
+			break;
+	}
+	
+	return 0;
 }
 
 void* threadfunc(void* thread_param)
@@ -60,6 +94,24 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	 * See implementation details in threading.h file comment block
 	 */
 	//printf("Creating thread for waitGet: %d, and waitRel: %d\n", wait_to_obtain_ms, wait_to_release_ms);
+	
+	FILE *file;
+	int numThreads = 0, intDly;
+	
+	file = fopen(FILENAME, "r");
+
+	if (file == NULL)
+	{
+		file = fopen(FILENAME, "w");
+		numThreads = 1;   // Default value to write
+		fprintf(file, "%d\n", numThreads);
+	}
+	else
+	{
+		fscanf(file, "%d", &numThreads);
+		numThreads++;
+	}
+	intDly = getDly(numThreads);
 
 	pthread_mutex_init(mutex, NULL);
 
@@ -67,7 +119,7 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 
 	myData->inputMutex = mutex;
 	myData->waitGet= wait_to_obtain_ms;
-	myData->waitRelease = wait_to_release_ms + (wait_to_release_ms == 1 ? 50 : 0);
+	myData->waitRelease = wait_to_release_ms + intDly; printf("adding dly %d for thread %d\n", intDly, numThreads);
 	myData->thread_complete_success = false;
 	 
 	pthread_attr_t myAttr;
