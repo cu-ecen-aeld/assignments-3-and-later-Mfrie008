@@ -22,15 +22,27 @@ void* threadfunc(void* thread_param)
 	
 	int lockStat = pthread_mutex_lock(thisData->inputMutex);
 	
+	if(lockStat != 0)
+	{
+		perror(NULL);
+		thisData->thread_complete_success = false;
+	}
+	
 	//printf("%s\n", "waiting after lock");
 	usleep(1000*thisData->waitRelease);
 	//printf("%lu: releasing\n", now);
 	
 	int relStat = pthread_mutex_unlock(thisData->inputMutex);
 	
+	if(relStat != 0)
+	{
+		perror(NULL);
+		thisData->thread_complete_success = false;
+	}
+	
 	//printf("lock stat: %d, release stat: %d\n", lockStat, relStat);
 	
-	thisData->thread_complete_success = !lockStat && !relStat;
+	thisData->thread_complete_success = true;
 	
 	return thread_param;
 }
@@ -55,13 +67,16 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	myData->inputMutex = mutex;
 	myData->waitGet= wait_to_obtain_ms;
 	myData->waitRelease = wait_to_release_ms;
-	myData->thread_complete_success = false;
-	 
-	pthread_attr_t myAttr;
-	pthread_attr_init(&myAttr);
+	myData->thread_complete_success = true;
 
-	int pthreadErr = pthread_create(thread, &myAttr, threadfunc, myData);
+	int pthreadErr = pthread_create(thread, NULL, threadfunc, myData);
+	
+	if(pthreadErr != 0)
+	{
+		perror(NULL);
+		myData->thread_complete_success = false;
+	}
 
-	return !pthreadErr;
+	return myData->thread_complete_success;
 }
 
