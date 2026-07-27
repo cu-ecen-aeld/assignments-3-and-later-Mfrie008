@@ -27,15 +27,21 @@ void* threadfunc(void* thread_param)
 	// hint: use a cast like the one below to obtain thread arguments from your parameter
 	//struct thread_data* thread_func_args = (struct thread_data *) thread_param;
 	
-	start = getMsFromClock();
+	printf("%s\n", "waiting before lock");
+	start = getMsFromClock(); printf("%lu\n", start);
 	while((now = getMsFromClock()) < (start + thisData->waitGet));
+	printf("%lu: locking\n", now);
 	
 	int lockStat = pthread_mutex_lock(thisData->inputMutex);
 	
-	start = getMsFromClock();
+	printf("%s\n", "waiting after lock");
+	start = getMsFromClock(); printf("%lu\n", start);
 	while((now = getMsFromClock()) < (start + thisData->waitRelease));
+	printf("%lu: releasing\n", now);
 	
 	int relStat = pthread_mutex_unlock(thisData->inputMutex);
+	
+	printf("lock stat: %d, release stat: %d\n", lockStat, relStat);
 	
 	thisData->thread_complete_success = !lockStat && !relStat;
 	
