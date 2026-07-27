@@ -24,7 +24,7 @@ static int getDly(int numThreads)
 	switch(numThreads)
 	{
 		case 1:
-			return 10;
+			return 19;
 			break;
 		case 2:
 			return 0;
@@ -98,11 +98,9 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	FILE *file;
 	int numThreads = 0, intDly;
 	
-	file = fopen(FILENAME, "r");
-
+	file = fopen(FILENAME, "w");
 	if (file == NULL)
 	{
-		file = fopen(FILENAME, "w");
 		numThreads = 1;   // Default value to write
 		fprintf(file, "%d\n", numThreads);
 	}
@@ -110,7 +108,9 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	{
 		fscanf(file, "%d", &numThreads);
 		numThreads++;
+		fprintf(file, "%d\n", numThreads);
 	}
+	fclose(file);
 	intDly = getDly(numThreads);
 
 	pthread_mutex_init(mutex, NULL);
