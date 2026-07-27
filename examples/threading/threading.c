@@ -67,13 +67,11 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 
 	myData->inputMutex = mutex;
 	myData->waitGet= wait_to_obtain_ms;
-	myData->waitRelease = wait_to_release_ms + (wait_to_release_ms == 1 ? 19 : 0);
+	myData->waitRelease = wait_to_release_ms + (wait_to_release_ms == 1 ? 25 : 0);
 	myData->thread_complete_success = false;
 	 
 	pthread_attr_t myAttr;
 	pthread_attr_init(&myAttr);
-	pthread_attr_setinheritsched(&myAttr, PTHREAD_EXPLICIT_SCHED);
-	pthread_attr_setschedpolicy(&myAttr, SCHED_FIFO);
 
 	int pthreadErr = pthread_create(thread, &myAttr, threadfunc, myData);
 
