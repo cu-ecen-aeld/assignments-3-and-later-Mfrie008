@@ -8,19 +8,8 @@
 //#define DEBUG_LOG(msg,...) //printf("threading: " msg "\n" , ##__VA_ARGS__)
 #define ERROR_LOG(msg,...) //printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
 
-static long unsigned int getMsFromClock(void)
-{
-	long unsigned int nowTime;
-	struct timespec thisTime;
-	clock_gettime(CLOCK_MONOTONIC, &thisTime);
-	
-	nowTime = (thisTime.tv_sec * 1000) + (thisTime.tv_nsec / 1000000);
-	return nowTime;
-}
-
 void* threadfunc(void* thread_param)
 {
-	unsigned long int start, now;
 	struct thread_data* thisData = (struct thread_data*)thread_param;
 
 	// TODO: wait, obtain mutex, wait, release mutex as described by thread_data structure
@@ -28,15 +17,13 @@ void* threadfunc(void* thread_param)
 	//struct thread_data* thread_func_args = (struct thread_data *) thread_param;
 	
 	//printf("%s\n", "waiting before lock");
-	start = getMsFromClock(); //printf("%lu\n", start);
-	while((now = getMsFromClock()) < (start + thisData->waitGet));
+	usleep(1000*thisData->waitGet);
 	//printf("%lu: locking\n", now);
 	
 	int lockStat = pthread_mutex_lock(thisData->inputMutex);
 	
 	//printf("%s\n", "waiting after lock");
-	start = getMsFromClock(); //printf("%lu\n", start);
-	while((now = getMsFromClock()) < (start + thisData->waitRelease));
+	usleep(1000*thisData->waitRelease);
 	//printf("%lu: releasing\n", now);
 	
 	int relStat = pthread_mutex_unlock(thisData->inputMutex);
