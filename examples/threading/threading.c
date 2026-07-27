@@ -66,7 +66,7 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	pthread_attr_t myAttr;
 	pthread_attr_init(&myAttr);
 
-	int pthreadErr = pthread_create(thread, &myAttr, threadfunc, (void*)&myData);
+	int pthreadErr = pthread_create(thread, &myAttr, threadfunc, myData);
 
 	return !pthreadErr;
 }
