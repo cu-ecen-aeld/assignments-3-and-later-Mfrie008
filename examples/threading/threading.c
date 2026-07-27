@@ -72,6 +72,8 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	 
 	pthread_attr_t myAttr;
 	pthread_attr_init(&myAttr);
+	pthread_attr_setinheritsched(&myAttr, PTHREAD_EXPLICIT_SCHED);
+	pthread_attr_setschedpolicy(&myAttr, SCHED_FIFO);
 
 	int pthreadErr = pthread_create(thread, &myAttr, threadfunc, myData);
 
