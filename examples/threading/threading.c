@@ -44,7 +44,7 @@ void* threadfunc(void* thread_param)
 	
 	thisData->thread_complete_success = true;
 	
-	return thread_param;
+	return thisData;
 }
 
 
