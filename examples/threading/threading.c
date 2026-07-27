@@ -59,6 +59,7 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	 *
 	 * See implementation details in threading.h file comment block
 	 */
+	printf("Creating thread for waitGet: %d, and waitRel: %d\n", wait_to_obtain_ms, wait_to_release_ms);
 
 	pthread_mutex_init(mutex, NULL);
 
