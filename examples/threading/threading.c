@@ -26,6 +26,7 @@ void* threadfunc(void* thread_param)
 	{
 		perror(NULL);
 		thisData->thread_complete_success = false;
+		return thisData;
 	}
 	
 	//printf("%s\n", "waiting after lock");
@@ -38,6 +39,7 @@ void* threadfunc(void* thread_param)
 	{
 		perror(NULL);
 		thisData->thread_complete_success = false;
+		return thisData;
 	}
 	
 	//printf("lock stat: %d, release stat: %d\n", lockStat, relStat);
@@ -60,9 +62,11 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	 */
 	//printf("Creating thread for waitGet: %d, and waitRel: %d\n", wait_to_obtain_ms, wait_to_release_ms);
 
-	pthread_mutex_init(mutex, NULL);
-
 	struct thread_data* myData = malloc(sizeof(struct thread_data));
+	if(myData == NULL)
+	{
+		return false;
+	}
 
 	myData->inputMutex = mutex;
 	myData->waitGet= wait_to_obtain_ms;
@@ -74,9 +78,10 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
 	if(pthreadErr != 0)
 	{
 		perror(NULL);
-		myData->thread_complete_success = false;
+		free(myData);
+		return false;
 	}
 
-	return myData->thread_complete_success;
+	return true;
 }
 
