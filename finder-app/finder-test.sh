@@ -59,6 +59,8 @@ ls
 ls -l finder.sh
 OUTPUTSTRING=$(finder.sh "$WRITEDIR" "$WRITESTR")
 
+echo $OUTPUTSTRING > assignment4-result.txt
+
 # remove temporary directories
 rm -rf /tmp/aeld-data
 
