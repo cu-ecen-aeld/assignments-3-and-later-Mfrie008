@@ -14,6 +14,8 @@ OBJECTS = writer.o
 SOURCES = writer.c
 HEADERS = 
 
+all: writer
+
 writer: writer.o
 	$(CC) -o writer writer.c
 
