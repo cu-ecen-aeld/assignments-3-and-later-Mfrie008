@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <syslog.h>
 
@@ -17,6 +18,7 @@
 #define WRITE_FILE	"/var/tmp/aesdsocketdata"
 
 volatile sig_atomic_t runServer = true;
+bool daemonMode = false;
 
 void signal_handler(int signo)
 {
@@ -27,6 +29,11 @@ void signal_handler(int signo)
 
 int main(int argc, char **argv)
 {
+	if (argc == 2 && strcmp(argv[1], "-d") == 0)
+	{
+	    daemonMode = true;
+	}
+
 	struct sigaction sigAction;
 	memset(&sigAction, 0, sizeof(sigAction));
 	sigAction.sa_handler = signal_handler;
@@ -81,6 +88,17 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	printf("Created socket, running server\n");
+	
+	// Daemon mode
+	if(daemonMode)
+	{
+		pid_t pid = fork();
+		
+		if(pid > 0)
+		{
+			exit(EXIT_SUCCESS);
+		}
+	}
 	
 	// Run server	
 	while(1)
