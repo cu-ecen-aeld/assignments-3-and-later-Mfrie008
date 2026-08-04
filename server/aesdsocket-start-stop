@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+set -u
+
+#TODO: take arguments --start, --stop, or just start/stop, then use start-stop-daemon api to perform those commands
+
+CMD=$1
+
+case "$CMD" in
+	start|--start)
+		#Start
+		start-stop-daemon --start --exec /usr/bin/aesdsocket -- -d
+		;;
+	stop|--stop)
+		# Stop
+		start-stop-daemon --stop --exec /usr/bin/aesdsocket --signal TERM
+		;;
+esac
